@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agata", "Agata\Agata.csproj", "{61453D0B-819E-4C8A-8B95-884F8077D308}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agata.Example", "Agata.Example\Agata.Example.csproj", "{987A0575-5CF6-4768-97B4-FE8481F71207}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61453D0B-819E-4C8A-8B95-884F8077D308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61453D0B-819E-4C8A-8B95-884F8077D308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61453D0B-819E-4C8A-8B95-884F8077D308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61453D0B-819E-4C8A-8B95-884F8077D308}.Release|Any CPU.Build.0 = Release|Any CPU
+		{987A0575-5CF6-4768-97B4-FE8481F71207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{987A0575-5CF6-4768-97B4-FE8481F71207}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{987A0575-5CF6-4768-97B4-FE8481F71207}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{987A0575-5CF6-4768-97B4-FE8481F71207}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
