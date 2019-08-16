@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Agata.Logging;
 
 namespace Agata.Concurrency
@@ -10,22 +9,22 @@ namespace Agata.Concurrency
     /// <summary>
     /// Represents a task awaiter which waits task completion on single thread with poll strategy.
     /// </summary>
-    public class SingleThreadPollTaskAwaiter : ITaskAwaiter
+    public class SingleThreadPollTaskAwaiter : IAwaiter
     {
         private struct QueueEntry
         {
-            public QueueEntry(Task task, Action action)
+            public QueueEntry(IAwaitable awaitable, IAction callback)
             {
-                Task = task;
-                Action = action;
+                Awaitable = awaitable;
+                Callback = callback;
             }
 
-            public readonly Task Task;
-            public readonly Action Action;
+            public readonly IAwaitable Awaitable;
+            public readonly IAction Callback;
         }
 
         private static readonly ILogger Log = Logger.Create<SingleThreadPollTaskAwaiter>();
-        
+
         private readonly BlockingCollection<QueueEntry> _queue;
 
         /// <summary>
@@ -41,13 +40,13 @@ namespace Agata.Concurrency
         }
 
         /// <summary>
-        /// Awaits task completion.
+        /// Awaits awaitable object to completion.
         /// </summary>
-        /// <param name="task">A task to await.</param>
-        /// <param name="onTaskCompleted">Action which should be performed when task will completed.</param>
-        public void Await(Task task, Action onTaskCompleted)
+        /// <param name="awaitable">An awaitable object to await.</param>
+        /// <param name="onReady">Action which should be performed when awaitable object will completed.</param>
+        public void Await(IAwaitable awaitable, IAction onReady)
         {
-            var entry = new QueueEntry(task, onTaskCompleted);
+            var entry = new QueueEntry(awaitable, onReady);
             _queue.Add(entry);
         }
 
@@ -57,8 +56,7 @@ namespace Agata.Concurrency
             while (true)
             {
                 var entry = _queue.Take();
-                var completed = entry.Task.IsCompleted || entry.Task.IsFaulted || entry.Task.IsCanceled;
-                if (!completed)
+                if (!entry.Awaitable.Ready)
                 {
                     savedEntries.Add(entry);
                 }
@@ -66,16 +64,15 @@ namespace Agata.Concurrency
                 {
                     CompleteEntry(entry);
                 }
-                
+
                 while (_queue.TryTake(out entry))
                 {
-                    completed = entry.Task.IsCompleted || entry.Task.IsFaulted || entry.Task.IsCanceled;
-                    if (!completed)
+                    if (!entry.Awaitable.Ready)
                     {
                         savedEntries.Add(entry);
                         continue;
                     }
-                    
+
                     CompleteEntry(entry);
                 }
 
@@ -83,8 +80,9 @@ namespace Agata.Concurrency
                 {
                     _queue.Add(savedEntry);
                 }
+
                 savedEntries.Clear();
-                
+
                 Thread.Sleep(0);
             }
         }
@@ -93,7 +91,7 @@ namespace Agata.Concurrency
         {
             try
             {
-                entry.Action();
+                entry.Callback.Invoke();
             }
             catch (Exception e)
             {

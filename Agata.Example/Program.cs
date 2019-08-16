@@ -15,7 +15,7 @@ namespace Agata.Example
         {
             var awaiter = new SingleThreadPollTaskAwaiter("Tasks awaiter", ThreadPriority.Normal);
 
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 100000; i++)
             {
                 var task = TaskChain();
                 Future

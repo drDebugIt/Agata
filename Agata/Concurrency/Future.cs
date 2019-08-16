@@ -44,26 +44,13 @@ namespace Agata.Concurrency
         /// <param name="task">A task which should be transformed to future.</param>
         /// <typeparam name="T">Type of task result.</typeparam>
         /// <returns>A future which wraps task computation results.</returns>
-        public static Future<T> From<T>(ITaskAwaiter awaiter, Task<T> task)
+        public static Future<T> From<T>(IAwaiter awaiter, Task<T> task)
         {
             var promise = new Promise<T>();
-            awaiter.Await(task, () =>
-            {
-                try
-                {
-                    if (task.IsCompleted)
-                    {
-                        promise.Success(task.Result);
-                        return;
-                    }
-
-                    promise.Fail(task.Exception);
-                }
-                catch (Exception error)
-                {
-                    promise.Fail(error);
-                }
-            });
+            var awaitableTask = AwaitableTask<T>.Acquire(task, promise);
+            
+            awaiter.Await(awaitableTask, awaitableTask);
+            
             return promise.Future;
         }
     }
