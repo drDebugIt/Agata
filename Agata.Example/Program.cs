@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Agata.Concurrency;
@@ -7,42 +8,25 @@ namespace Agata.Example
 {
     class Program
     {
-        private static volatile int _countFromTasks;
-        private static volatile int _countFromFutureMap;
-        private static volatile int _countFromFutureComplete;
-
         static void Main(string[] args)
         {
-            var awaiter = new SingleThreadPollTaskAwaiter("Tasks awaiter", ThreadPriority.Normal);
+            const int iterations = 100;
 
-            for (var i = 0; i < 100000; i++)
+            var asyncAwaitTest = new TestAsyncAwait(iterations);
+            var agataFuturesTest = new TestAgataFutures(iterations);
+
+            for (var i = 0; i < 10; i++)
             {
-                var task = TaskChain();
-                Future
-                    .From(awaiter, task)
-                    .MapR(Execute.On(SystemThreadPool.Instance), _ =>
-                    {
-                        Interlocked.Increment(ref _countFromFutureMap);
-                        return (object) null;
-                    })
-                    .OnComplete(Execute.On(SystemThreadPool.Instance), _ =>
-                    {
-                        Interlocked.Increment(ref _countFromFutureComplete);
-                    });
-            }
+                var sw = Stopwatch.StartNew();
+                asyncAwaitTest.Run();
+                sw.Stop();
+                Console.WriteLine($"Tasks: {sw.Elapsed}");
 
-            while (true)
-            {
-                Console.WriteLine($"{_countFromTasks} {_countFromFutureMap} {_countFromFutureComplete}");
-                Thread.Sleep(100);
+                sw.Restart();
+                agataFuturesTest.Run();
+                sw.Stop();
+                Console.WriteLine($"Agata: {sw.Elapsed}");
             }
-        }
-
-        static async Task<object> TaskChain()
-        {
-            await Task.Delay(1000);
-            await Task.Factory.StartNew(() => Interlocked.Increment(ref _countFromTasks));
-            return null;
         }
     }
 }

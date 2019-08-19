@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Agata.Concurrency
@@ -52,6 +53,36 @@ namespace Agata.Concurrency
             awaiter.Await(awaitableTask, awaitableTask);
             
             return promise.Future;
+        }
+
+        public static void WaitAll(Future<Unit>[] futures)
+        {
+            var cnt = futures.Length;
+            while (true)
+            {
+                for (var i = 0; i < cnt; i++)
+                {
+                    if (!futures[i].Completed)
+                    {
+                        continue;
+                    }
+
+                    cnt -= 1;
+                    if (i < cnt)
+                    {
+                        futures[i] = futures[cnt - 1];
+                    }
+
+                    i -= 1;
+                }
+
+                if (cnt == 0)
+                {
+                    return;
+                }
+                
+                Thread.Sleep(0);
+            }
         }
     }
 }

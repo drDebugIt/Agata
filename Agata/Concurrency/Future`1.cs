@@ -6,7 +6,7 @@ namespace Agata.Concurrency
     /// <summary>
     /// Represents a something that will be accepted in future.
     /// </summary>
-    public class Future<T>
+    public class Future<T> : IAwaitable
     {
         private enum Status
         {
@@ -102,6 +102,8 @@ namespace Agata.Concurrency
                 return state.Status != Status.Unknown;
             }
         }
+
+        bool IAwaitable.Ready => Completed;
 
         /// <summary>
         /// Transforms this future result to future with another type.
