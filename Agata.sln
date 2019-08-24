@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agata", "Agata\Agata.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agata.Example", "Agata.Example\Agata.Example.csproj", "{987A0575-5CF6-4768-97B4-FE8481F71207}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agata.Tests", "Agata.Tests\Agata.Tests.csproj", "{7E8FF796-3415-4DEB-88D7-ABD26A628EB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{987A0575-5CF6-4768-97B4-FE8481F71207}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{987A0575-5CF6-4768-97B4-FE8481F71207}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{987A0575-5CF6-4768-97B4-FE8481F71207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E8FF796-3415-4DEB-88D7-ABD26A628EB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E8FF796-3415-4DEB-88D7-ABD26A628EB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E8FF796-3415-4DEB-88D7-ABD26A628EB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E8FF796-3415-4DEB-88D7-ABD26A628EB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

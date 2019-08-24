@@ -10,7 +10,12 @@ namespace Agata.Concurrency
         private SystemThreadPool()
         {
         }
-        
+
+        public void Schedule(IAction action)
+        {
+            Schedule(action.Invoke);
+        }
+
         public void Schedule(Action action)
         {
             ThreadPool.QueueUserWorkItem(_ => action());

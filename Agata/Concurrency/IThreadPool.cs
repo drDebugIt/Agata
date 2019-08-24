@@ -12,5 +12,11 @@ namespace Agata.Concurrency
         /// </summary>
         /// <param name="action">An action to execute.</param>
         void Schedule(Action action);
+        
+        /// <summary>
+        /// Schedules execution of specified action on this thread pool.  
+        /// </summary>
+        /// <param name="action">An action to execute.</param>
+        void Schedule(IAction action);
     }
 }

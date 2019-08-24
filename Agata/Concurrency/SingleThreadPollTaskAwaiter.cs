@@ -23,7 +23,7 @@ namespace Agata.Concurrency
             public readonly IAction Callback;
         }
 
-        private static readonly ILogger Log = Logger.Create<SingleThreadPollTaskAwaiter>();
+        private static readonly ILog Log = Logging.Log.For<SingleThreadPollTaskAwaiter>();
 
         private readonly BlockingCollection<QueueEntry> _queue;
 
@@ -82,8 +82,6 @@ namespace Agata.Concurrency
                 }
 
                 savedEntries.Clear();
-
-                Thread.Sleep(0);
             }
         }
 

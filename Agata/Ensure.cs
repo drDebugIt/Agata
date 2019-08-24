@@ -15,5 +15,18 @@ namespace Agata
 
             return value;
         }
+        
+        internal static string NotBlank(string str, string argName, string msg = null)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+            {
+                throw new ArgumentException(
+                    msg ?? "Argument can't be null or blank string.",
+                    argName);
+            }
+
+            return str;
+        }
+
     }
 }
