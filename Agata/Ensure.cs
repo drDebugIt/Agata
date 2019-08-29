@@ -28,5 +28,12 @@ namespace Agata
             return str;
         }
 
+        internal static void That(bool condition, string argName, string msg)
+        {
+            if (!condition)
+            {
+                throw new ArgumentException(msg, argName);
+            }
+        }
     }
 }

@@ -14,10 +14,17 @@ namespace Agata.Logging
         /// Logs specified message with debug severity.
         /// </summary>
         void Debug(string message);
-        
+
+        /// <summary>
+        /// Logs specified message with warning severity.
+        /// </summary>
+        void Warning(string message);
+
         /// <summary>
         /// Logs specified message with error severity.
         /// </summary>
         void Error(string message);
     }
+    
+    
 }

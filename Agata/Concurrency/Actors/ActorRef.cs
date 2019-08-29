@@ -35,7 +35,16 @@ namespace Agata.Concurrency.Actors
         public void Schedule(Action<T> action)
         {
             _actor.Schedule(action);
-        } 
+        }
+
+        /// <summary>
+        /// Kills this actor with subject notification.
+        /// </summary>
+        /// <param name="action">An action to notify actor subject.</param>
+        public void Kill(Action<T> action)
+        {
+            _actor.Kill(action);
+        }
     }
 
     /// <summary>

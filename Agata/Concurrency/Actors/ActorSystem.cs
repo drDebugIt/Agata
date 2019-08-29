@@ -14,17 +14,21 @@ namespace Agata.Concurrency.Actors
     {
         private static readonly ILog Log = Logging.Log.For<ActorSystem>();
 
-        private readonly string _name;
         private readonly IThreadPool _threadPool;
         private readonly ConcurrentDictionary<Type, Func<object>> _actorFactory;
         private readonly Dictionary<string, IActorRef> _actors;
+
+        /// <summary>
+        /// Name of this actor system.
+        /// </summary>
+        public readonly string Name;
 
         /// <summary>
         /// Initializes an actor system with specified thread pool.
         /// </summary>
         public ActorSystem(string name, IThreadPool threadPool)
         {
-            _name = NotBlank(name, nameof(name));
+            Name = NotBlank(name, nameof(name));
             _threadPool = NotNull(threadPool, nameof(threadPool));
             _actorFactory = new ConcurrentDictionary<Type, Func<object>>();
             _actors = new Dictionary<string, IActorRef>();
@@ -63,7 +67,7 @@ namespace Agata.Concurrency.Actors
             {
                 var error =
                     "Can not find actor factory (" +
-                    $"actor_system={_name}," +
+                    $"actor_system={Name}," +
                     $"actor_name={actorName}," +
                     $"actor_type={actorType})";
 
@@ -79,7 +83,7 @@ namespace Agata.Concurrency.Actors
                     {
                         var error =
                             "Actor was found but has unexpected type (" +
-                            $"actor_system={_name}," +
+                            $"actor_system={Name}," +
                             $"actor_name={actorName}," +
                             $"requested_type={typeof(ActorRef<T>)}," +
                             $"actual_type={actorRef.GetType()})";
@@ -98,7 +102,7 @@ namespace Agata.Concurrency.Actors
                     {
                         var error =
                             "Actor created by actor factory has a null value (" +
-                            $"actor_system={_name}," +
+                            $"actor_system={Name}," +
                             $"actor_name={actorName}," +
                             $"actor_type={actorType})";
 
@@ -107,14 +111,14 @@ namespace Agata.Concurrency.Actors
                     }
 
                     var sw = Stopwatch.StartNew();
-                    var actor = new Actor(actorName, _threadPool, subject);
+                    var actor = new Actor(this, _threadPool, actorName, subject);
                     sw.Stop();
 
                     if (Log.IsDebugEnabled)
                     {
                         var message =
                             "New actor was created (" +
-                            $"actor_system={_name}," +
+                            $"actor_system={Name}," +
                             $"actor_name={actorName}," +
                             $"actor_type={actorType}," +
                             $"elapsed={sw.Elapsed.TotalMilliseconds:0}ms)";
@@ -131,7 +135,7 @@ namespace Agata.Concurrency.Actors
                 {
                     var error =
                         "Unexpected error on actor creation (" +
-                        $"actor_system={_name}," +
+                        $"actor_system={Name}," +
                         $"actor_name={actorName}," +
                         $"actor_type={actorType}): " +
                         $"{e.Message}" +
@@ -141,6 +145,18 @@ namespace Agata.Concurrency.Actors
                     Log.Error(error);
                     throw;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Removes actor with specified identifier.
+        /// </summary>
+        /// <param name="name">Name of removed actor.</param>
+        internal void RemoveActor(string name)
+        {
+            lock (_actors)
+            {
+                _actors.Remove(name);
             }
         }
     }
